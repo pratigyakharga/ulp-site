@@ -1,0 +1,488 @@
+
+
+
+<html>
+	<head>
+		<title>Eviction</title>
+		<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-T5G5WPC');</script>
+<!-- End Google Tag Manager -->
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+
+<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/5.1.1/bootstrap-social.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"/>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.8.0/parsley.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.441.0.min.js"></script>
+<script type="text/javascript" src="/resources/js/common/util.js?v=2"></script>
+<script type="text/javascript" src="/resources/js/main.js?v=2"></script>
+
+
+	
+
+
+
+<style>
+	/******************************************************************************/
+	/*Loging page related css*/
+	/******************************************************************************/
+	.loginblock, .signupblock, .resetpasswordblock{
+		max-width:355px;
+		background:#fff;
+	    margin: 0 auto;
+	    border-radius:5px;
+	}
+	.login .pagewrapper, .signup .pagewrapper, .resetpassword .pagewrapper{
+		margin-top:7%;
+	}
+	.innertable>tbody>tr>td, .innertable>tbody>tr>th, .innertable>tfoot>tr>td, .innertable>tfoot>tr>th, .innertable>thead>tr>td, .innertable>thead>tr>th {
+		border:0px;
+	}
+	.loginblock, .signupblock, .resetpasswordblock, .contactblock{
+		max-width:355px;
+		background:#fff;
+	    margin: 0 auto;
+		border: 1px solid #ccc;
+	}
+	.divider {
+	    border-color: #f0f0f0;
+	    border-style: dotted;
+	    border-width: 0 0 1px;
+	    height: 10px;
+	    line-height: 20px;
+	    text-align:center;
+	    overflow: visible;
+	}					
+	.divider span {
+	    background-color: #ccc;
+	    display: inline-block;
+	    padding: 0 10px;
+	    min-height: 20px;
+	    min-width: 10%;
+	    border-radius:50px;
+	}
+	.errorDiv{
+		color:red;
+		font-size:12px;
+		padding:2px
+	}
+	#contact td{
+		border-top:0px;
+		border-radius:5px;
+	}
+	/******************************************************************************/
+	/*This is for validation extenally*/
+	/******************************************************************************/	
+	input.parsley-success, select.parsley-success, textarea.parsley-success {
+	     color: #468847;
+	     background-color: #DFF0D8;
+	     border: 1px solid #D6E9C6;
+	}
+	input.parsley-error, select.parsley-error, textarea.parsley-error {
+	     color: #B94A48;
+	     background-color: #F2DEDE;
+	     border: 1px solid #EED3D7;
+	}
+	.parsley-errors-list {
+	     margin: 2px 0 3px;
+	     padding: 2px;
+	     list-style-type: none;
+	     font-size: 0.9em;
+	     line-height: 0.9em;
+	     opacity: 0;
+	     transition: all .3s ease-in;
+	     -o-transition: all .3s ease-in;
+	     -moz-transition: all .3s ease-in;
+	     -webkit-transition: all .3s ease-in;
+	}
+	.parsley-errors-list.filled {
+	     opacity: 1;
+	     color:red;
+	}
+	.parsley-required{
+	     color:red;
+	}	
+	/***************************************************************************************************/
+	/*This is for PDF page while accessing externally but used while initiating if logged in as well*/
+	/***************************************************************************************************/			
+	.initform .pagewrapper {
+	  padding-right: 15px;
+	  padding-left: 15px;
+	  margin-right: auto;
+	  margin-left: auto;
+	}
+	@media (min-width: 768px) {
+	.initform .pagewrapper {
+	    width: 750px;
+	  }
+	}
+	@media (min-width: 992px) {
+	.initform .pagewrapper {
+	    width: 970px;
+	  }
+	}
+	@media (min-width: 1200px) {
+	.initform .pagewrapper {
+	    width: 1170px;
+	  }
+	}					
+	.initform .pagewrapper{
+		margin-top:40px
+	}
+</style>	
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+		<style>body{
+
+}</style>
+	</head>
+	<body class="initform formdef">	
+		<nav class="navbar navbar-default navbar-light globalnav">
+     <div class="container-fluid">
+    
+    <div class="navbar-header">
+         <a class="navbar-brand" href="/">
+      <img style="height:35px" src="https://s3.us-east-2.amazonaws.com/divorce.uslegalpro.com/logo.png" />
+   </a>
+
+<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav">
+      <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span></button>
+         </div>
+    
+    
+  
+
+
+   <div class="navbar-collapse collapse" id="navbarNav">
+
+		<ul class="nav navbar-nav navbar-right"><li class="nav-item" id="home">
+				<a class="nav-link" href="/">Home</a>
+			</li><li class="nav-item" id="login">
+				<a class="nav-link" href="/contact">Contact</a>
+			</li><li class="nav-item" id="login">
+				<a class="nav-link" href="/login">Login</a>
+			</li></ul>
+   </div>
+         
+    </div>
+</nav>
+		<div class="pagewrapper">
+			<!-- PBO can be null if formdef is null -->
+				 <div id='startprocess'>
+				   	<h2 class='title'>Eviction</h2>
+				   	<div class='inputsection'>
+				    	
+				    	<form target="_parent" id='form' action='/na/form/initiate' method='GET'  data-parsley-validate="">
+				    		<div class='inner'>
+					    		<input type="hidden" name="pbo" value="com.ezcollab.model.form.FormDef_55143801-7f54-459a-885c-161da29a3e1f"/>
+					 			<input type='password' name='email1' value='' class='specialHiddenTextBox' style='height:0px;padding:1px;margin:0px;width:0px;border:none;opacity:0;'/>
+					    		
+									<p><input required placeholder="Enter your email to start process" type='email' class='form-control' name='email'/></p>										
+								
+								<button class='btn btn-primary startprocessbutton'>Start Process</button>
+							</div>
+						</form>
+						<div class='formdescription'><div class="formdescription"><div class="formdescription">
+    <div>
+        <style>
+            .tab-content {
+                border: 1px solid #dddddd;
+                border-top: 0px;
+                padding: 5px;
+            }
+            .image-container {
+                display: flex;
+                justify-content: center;
+            }
+            .image-container img {
+                width: 100px;
+            }
+            .process-image {
+                overflow: hidden;
+            }
+            .margin-setup p {
+                margin: 15px 0 0 15px;
+            }
+            .icon-margin p span {
+                margin-right: 8px;
+            }
+            .county-badge {
+                font-size: 1.3em !important;
+                border-radius: 45px;
+                background-color: white;
+                color: #676666;
+                font-weight: normal;
+                padding: 8px 16px;
+                border: 1px solid #c5c5c5;
+                margin: 4px 2px;
+            }
+			
+			@media (min-width: 576px) { 
+			.panel-heading {
+                font-size: larger;
+                font-weight: bold;
+            }
+			.d-flex{
+				display:flex;
+				flex-wrap: wrap;
+			}
+			.flex-col {
+				flex:1;
+				display:flex;
+				align-items:stretch;
+				flex-direction:column;
+				flex-grow:1
+			}
+			.flex-child{
+			align-items:stretch;
+			flex-grow:1;
+			}
+			}
+			@media (max-width: 575.98px) { 
+				.flex-col {
+				margin-bottom: 1.5rem
+				}
+			}
+            
+        </style>
+        <hr />
+		<div>
+			<h2 class="display-4">We are a Certified E-Filing Service Provider</h2>
+			<p>
+			   We file Eviction for <span class="bold highlight"> $69</span>. Court Fees Applies.
+			</p>
+		</div>
+        <hr />
+
+        <ul class="nav nav-tabs" role="tablist"><li role="presentation" class="active">
+                <a href="#info" aria-controls="home" role="tab" data-toggle="tab">Information</a>
+            </li></ul>
+
+        <div class="tab-content" style="border:0px 1px 1px 1px solid #f0f0f0">
+            <div role="tabpanel" class="tab-pane active" id="info">
+			
+                <div class="container-fluid padding">
+					<h3 style="text-align:center;margin-bottom:30px">STATES WHERE WE PROVIDE SERVICE</h3>
+                    <div class="row padding">
+                        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 col-xl-3 text-center">
+                            <div class="image-container">
+                                <img src="https://uslegalpro.com/images/icons/texas.png" />
+                            </div>
+                            <h5 class="mt-4">Texas Certified</h5>
+                        </div>
+                        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 col-xl-3 text-center">
+                            <div class="image-container">
+                                <img src="https://uslegalpro.com/images/icons/IL.png" />
+                            </div>
+                            <h5 class="mt-4">Illinois Certified</h5>
+                        </div>
+                        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 col-xl-3 text-center">
+                            <div class="image-container">
+                                <img src="https://uslegalpro.com/images/icons/IN.png" />
+                            </div>
+                            <h5 class="mt-4">Indiana Certified</h5>
+                        </div>
+                        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 col-xl-3 text-center">
+                            <div class="image-container">
+                                <img src="https://uslegalpro.com/images/icons/ca.png" />
+                            </div>
+                            <h5 class="mt-4">California Certified</h5>
+                        </div>
+                    </div>
+                </div>
+				
+
+                <hr class="my-4" />
+
+                <div class="container-fluid padding">
+                    <div class="row padding">
+                        <h3 style="text-align:center;margin-bottom:30px">PROCESS & FEES</h3>
+                        <div class="panel-group d-flex"> 
+                            <div class="col-md-6 flex-col">
+                                <div class="panel panel-default flex-child">
+                                    <div class="panel-heading">PROCESS</div>
+                                    <div class="panel-body">
+                                        <p>Your complete the application. This will take you <b>5 minutes.</b> <a href="#">Get Started</a></p>
+                                        <p>We prepare documents with your details and you approve.</p>
+                                        <p>We file the petition to the court within <b> 12 hours.</b></p>
+                                        <p>You call the court for hearing date.</p>
+                                        <p>You finalize by going to the court.</p>
+                                       
+										<hr />
+										Click <a href="https://blog.uslegalpro.com/category/eviction">here</a> for more information on eviction	
+                                    </div>
+									
+                                </div>
+                            </div>						
+                            <div class="col-md-6 flex-col">
+                                <div class="panel panel-default flex-child">
+                                    <div class="panel-heading">FEES</div>
+                                    <div class="panel-body">
+                                            <ul class="nav nav-tabs" role="tablist"><li role="presentation" class="active"><a href="#texas" aria-controls="texas" role="tab" data-toggle="tab">Texas</a></li><li role="presentation"><a href="#illinois" aria-controls="illinois" role="tab" data-toggle="tab">Illinois</a></li></ul>
+
+                                          
+                                            
+                                            <div class="tab-content">
+                                              <div role="tabpanel" class="tab-pane active" id="texas">
+                                                <p>Court Fees: $125 (Approx)</p>
+                                                <p>Our Fees: $69 / Case</p>
+                                                <p>Total: $174</p>
+                                                <hr />
+                                                <p><b>Additional Fees</b></p>
+                                                <p>Sometimes you may need to do subsequent filings. 
+                                                    Our fee for subsequent filing is $29.98 per document per submission</p>
+                                              </div>
+                                              <div role="tabpanel" class="tab-pane" id="illinois">
+                                                <p>Court Fees: $300 (Approx)</p>
+                                                <p>Our Fees: $69 / Case</p>
+                                                <p>Total: $349</p>
+                                                <hr />
+                                                <p><b>Additional Fees</b></p>
+                                                <p>Sometimes you may need to do subsequent filings. 
+                                                    Our fee for subsequent filing is $29.98 per document per submission</p>
+                                              </div>
+                                              <div role="tabpanel" class="tab-pane" id="california">
+                                                <p>Court Fees: $350 (Approx)</p>
+                                                <p>Our Fees: $69 / Case</p>
+                                                <p>Total: $399</p>
+                                                <hr />
+                                                <p><b>Additional Fees</b></p>
+                                                <p>Sometimes you may need to do subsequent filings. 
+                                                    Our fee for subsequent filing is $29.98 per document per submission</p>
+                                              </div>
+                                              <div role="tabpanel" class="tab-pane" id="indiana">
+                                                <p>Court Fees: $200 (Approx)</p>
+                                                <p>Our Fees: $69 / Case</p>
+                                                <p>Total: $249</p>
+                                                <hr />
+                                                <p><b>Additional Fees</b></p>
+                                                <p>Sometimes you may need to do subsequent filings. 
+                                                    Our fee for subsequent filing is $29.98 per document per submission</p></div>
+                                            </div>
+                                          
+                                          </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+					
+
+				
+
+                <hr class="my-4" />
+
+                <div class="container-fluid padding">
+                    <div class="row padding">
+                        <h3 style="text-align:center;margin-bottom:30px">TERMS & CONDITIONS</h3>
+						<div>
+							No Guarantees - We cannot advice you on legality of your claim or filing. We simply help with the process. It is your responsibility to make sure what you entered is correct and is acceptable to the court.
+							No Refunds - Our team works on your application as soon as you complete your application and since it is a service, it cannot be undone.
+						</div>
+                    </div>
+					
+                    <hr class="my-4" />
+                    <div class="container-fluid padding">
+                        <div class="row padding">
+                            <div class="col-12">
+                                <h3 style="text-align:center;margin-bottom:30px">SUPPORTED COUNTIES IN TEXAS</h3>
+
+                                <div class="county-badgelist">
+                                    <h1 class="badge badge-light county-badge">Bell</h1>
+                                    <h1 class="badge badge-light county-badge">Brazos</h1>
+                                    <h1 class="badge badge-light county-badge">Burnet</h1>
+                                    <h1 class="badge badge-light county-badge">Cameron</h1>
+                                    <h1 class="badge badge-light county-badge">Collin</h1>
+                                    <h1 class="badge badge-light county-badge">Dent</h1>
+                                    <h1 class="badge badge-light county-badge">El Paso</h1>
+                                    <h1 class="badge badge-light county-badge">Ford</h1>
+                                    <h1 class="badge badge-light county-badge">Grayson</h1>
+                                    <h1 class="badge badge-light county-badge">Gregg</h1>
+                                    <h1 class="badge badge-light county-badge">Guadalupe</h1>
+                                    <h1 class="badge badge-light county-badge">Harris</h1>
+                                    <h1 class="badge badge-light county-badge">Hays</h1>
+                                    <h1 class="badge badge-light county-badge">Henderson</h1>
+                                    <h1 class="badge badge-light county-badge">Johnson</h1>
+                                    <h1 class="badge badge-light county-badge">Randall</h1>
+                                    <h1 class="badge badge-light county-badge">Tarrant</h1>
+                                    <h1 class="badge badge-light county-badge">Travis</h1>
+                                    <h1 class="badge badge-light county-badge">Victoria</h1>
+                                    <h1 class="badge badge-light county-badge">Williamson</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="profile"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+					
+				</div>
+					</div>
+					<script>$('#form').parsley();</script>
+				</div>
+			
+		</div>	
+		<script>
+			$(function(){
+				$('.startprocessbutton').click(function(e) {
+					e.preventDefault();
+					SH.form.canStartFormProcess(function(response){
+						if(response){
+							$('#form').submit();
+						}
+					});
+				});
+			});
+		</script>
+		
+<br/>
+<div class='footer'><hr />
+<div class="container text-center">US Legal PRO | Dallas, TX 75208 | (972)-807-0689 | <a href="mailto:efile@uslegalpro.com">efile@uslegalpro.com</a></div>
+<br /></div>
+	<div class='ezfooter pull-right' style='bottom:0;position:fixed;right:0;background:#f9f9f9;color:gray;padding:1px;border-radius:4px 0px 0px 0px'>
+		<div><small>Powered by <a href='https://ezcollab.com'>EZCollab</a></small> <span style='font-size:8px'>[ ip ]</span>&nbsp;&nbsp;</div>
+	</div>
+	
+	<!--Start of Tawk.to Script-->
+	<script type="text/javascript">
+	var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+	
+	
+	(function(){
+	var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+	s1.async=true;
+	s1.src='https://embed.tawk.to/56a9b3656ac1f8ea25636ffc/1ba918207';
+	s1.charset='UTF-8';
+	s1.setAttribute('crossorigin','*');
+	s0.parentNode.insertBefore(s1,s0);
+	})();
+	</script>
+	<!--End of Tawk.to Script-->    
+
+
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T5G5WPC"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+	</body>
+</html>
